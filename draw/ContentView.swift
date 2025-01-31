@@ -78,7 +78,7 @@ struct ContentView: View {
     ]
     
     @State private var selectedImages: [String] = ["image1", "image2", "image3", "image4"]
-    @State private var previousImages: [String] = []
+    @State private var previousImages: [Int] = []
 
     var body: some View {
         VStack (spacing: 0){
@@ -176,19 +176,25 @@ struct ContentView: View {
 
     
     private func selectRandomImages() {
-        // Filter out previous images to ensure no repeats
-        let availableImages = images.filter { !previousImages.contains($0) }
         
-        // If we don't have enough images to select, reset previous images
-        if availableImages.count < 4 {
-            previousImages = selectedImages
+        var selectedIndexArray = [0, 0, 0, 0]
+        
+        for i in 0..<4 {
+            let randomInteger = Int.random(in: 1...7)
+            if previousImages.count > i {
+                if randomInteger == previousImages[i]{
+                    selectedIndexArray[i] = 0
+                } else {
+                    selectedIndexArray[i] = randomInteger
+                }
+            } else {
+                selectedIndexArray[i] = randomInteger
+            }
+            selectedImages[i] = images[selectedIndexArray[i]]
         }
-        
-        // Select 4 random images from the available images
-        selectedImages = Array(availableImages.shuffled().prefix(4))
-        
+    
         // Update previous images
-        previousImages = selectedImages
+        previousImages = selectedIndexArray
     }
 }
 
