@@ -16,11 +16,19 @@ class ImageLineView: UIView {
             // Set the line color and line width
             context.setStrokeColor(UIColor.red.cgColor)
             context.setLineWidth(5.0)
-
+            
             // Draw a line
-            context.move(to: CGPoint(x: 20, y: 20)) // Start point
-            context.addLine(to: CGPoint(x: rect.width - 20, y: rect.height - 20)) // End point
+            context.move(to: CGPoint(x: rect.width / 2, y: 10)) // Start point
+            context.addLine(to: CGPoint(x: rect.width - 10, y: rect.height / 2)) // End point
+            context.addLine(to: CGPoint(x: rect.width / 2, y: rect.height - 10)) // End point
+            context.addLine(to: CGPoint(x: 10, y: rect.height / 2)) // End point
+            context.addLine(to: CGPoint(x: rect.width / 2, y: 10)) // End point
 
+            context.move(to: CGPoint(x: 30, y: rect.height / 2)) // Start point
+            context.addLine(to: CGPoint(x: 60, y: rect.height / 2 + 30))
+            context.addLine(to: CGPoint(x: rect.width - 30, y: 30))
+
+            
             // Stroke the path
             context.strokePath()
         }
@@ -48,10 +56,10 @@ struct ImageLineViewRepresentable: UIViewRepresentable {
 
 // Main SwiftUI View
 struct ContentView: View {
-    @State private var showLine1 = true // State variable to toggle line visibility
-    @State private var showLine2 = true // State variable to toggle line visibility
-    @State private var showLine3 = true // State variable to toggle line visibility
-    @State private var showLine4 = true // State variable to toggle line visibility
+    @State private var showLine1 = false // State variable to toggle line visibility
+    @State private var showLine2 = false // State variable to toggle line visibility
+    @State private var showLine3 = false // State variable to toggle line visibility
+    @State private var showLine4 = false // State variable to toggle line visibility
 
     let images = [
         "image1",
@@ -73,64 +81,80 @@ struct ContentView: View {
     @State private var previousImages: [String] = []
 
     var body: some View {
-        VStack {
-            HStack {
+        VStack (spacing: 0){
+            HStack (spacing: 0){
                 ZStack {
                     // Background color for each element
                     colors[0] // Use the corresponding color for each image
-                        .cornerRadius(10) // Optional: round the corners
                     
                     
                     ImageLineViewRepresentable(image: UIImage(named: selectedImages[0]), showLine: $showLine1) // Replace with your image name
-                        .frame(width: 150, height: 150) // Set desired frame size
+                        .aspectRatio(contentMode: .fit) // Maintain aspect ratio
+                        .frame(height: 150) // Set a fixed height
+                        .clipped()
                         .border(Color.black) // Optional border for visibility
                         .onTapGesture {
                             // Toggle line visibility on tap
                             showLine1.toggle()
                         }
                 }
+                .padding(0)
+
                 ZStack {
                     // Background color for each element
                     colors[1] // Use the corresponding color for each image
-                        .cornerRadius(10) // Optional: round the corners
                     
                     ImageLineViewRepresentable(image: UIImage(named: selectedImages[1]), showLine: $showLine2) // Replace with your image name
-                        .frame(width: 150, height: 150) // Set desired frame size
+                        .aspectRatio(contentMode: .fit) // Maintain aspect ratio
+                        .frame(height: 150) // Set a fixed height
+                        .clipped()
                         .border(Color.black) // Optional border for visibility
                         .onTapGesture {
                             // Toggle line visibility on tap
                             showLine2.toggle()
                         }
                 }
+                .padding(0)
+
             }
-            HStack {
+            .padding(0)
+
+            HStack (spacing: 0) {
                 ZStack {
                     // Background color for each element
                     colors[2] // Use the corresponding color for each image
-                        .cornerRadius(10) // Optional: round the corners
                     
                     ImageLineViewRepresentable(image: UIImage(named: selectedImages[2]), showLine: $showLine3) // Replace with your image name
-                        .frame(width: 150, height: 150) // Set desired frame size
+                        .aspectRatio(contentMode: .fit) // Maintain aspect ratio
+                        .frame(height: 150) // Set a fixed height
+                        .clipped()
                         .border(Color.black) // Optional border for visibility
                         .onTapGesture {
                             // Toggle line visibility on tap
                             showLine3.toggle()
                         }
                 }
+                .padding(0)
+
                 ZStack {
                     // Background color for each element
                     colors[3] // Use the corresponding color for each image
-                        .cornerRadius(10) // Optional: round the corners
                     
                     ImageLineViewRepresentable(image: UIImage(named: selectedImages[3]), showLine: $showLine4) // Replace with your image name
-                        .frame(width: 150, height: 150) // Set desired frame size
+                        .aspectRatio(contentMode: .fit) // Maintain aspect ratio
+                        .frame(height: 150) // Set a fixed height
+                        .clipped()
                         .border(Color.black) // Optional border for visibility
                         .onTapGesture {
                             // Toggle line visibility on tap
                             showLine4.toggle()
                         }
+                    
                 }
+                .padding(0)
+
             }
+            
             Button(action: {
                 selectRandomImages()
             }) {
@@ -141,10 +165,15 @@ struct ContentView: View {
                     .foregroundColor(.white)
                     .cornerRadius(10)
             }
-            .padding()
+            .padding(0)
+
         }
-        .padding()
+        .padding(0)
+        .onAppear {
+            selectRandomImages() // Select images when the view appears
+        }
     }
+
     
     private func selectRandomImages() {
         // Filter out previous images to ensure no repeats
